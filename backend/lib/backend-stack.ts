@@ -7,13 +7,13 @@ export class BackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // ✅ Environment handling
+    //  Environment handling
     const environment = this.node.tryGetContext('environment') || 'dev';
     const project = 'inventory';
 
     const name = (service: string) => `${project}-${service}-${environment}`;
 
-    // ✅ DynamoDB Table (Scenario 1 Compliant)
+    //  DynamoDB Table (Scenario 1 Compliant)
     const table = new dynamodb.Table(this, 'InventoryTable', {
       tableName: name('dynamodb'),
       partitionKey: {
@@ -32,7 +32,7 @@ export class BackendStack extends cdk.Stack {
       stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
     });
 
-    // ✅ REST API (Required by Assignment)
+    //  REST API 
     const api = new apigateway.RestApi(this, 'InventoryApi', {
       restApiName: name('apigw'),
       deployOptions: {
@@ -44,7 +44,7 @@ export class BackendStack extends cdk.Stack {
       },
     });
 
-    // ✅ API Route Structure
+    //  API Route Structure
     const v1 = api.root.addResource('v1');
     const warehouses = v1.addResource('warehouses');
     const warehouse = warehouses.addResource('{warehouseId}');
